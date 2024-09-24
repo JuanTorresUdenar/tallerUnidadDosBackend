@@ -41,4 +41,23 @@ const buscarMascotaPorId = async (req, res) => {
     }
 };
 
-export {crearMascota, buscarMascotas, buscarMascotaPorId}
+// Actualizar mascota
+const actualizarMascota = async (req, res) => {
+    const id = req.params.id;
+    const { nombre, edad, claseAnimal, peso, color } = req.body;
+
+    try {
+        const [actualizado] = await mascotas.update({ nombre, edad, claseAnimal, peso, color }, {
+            where: { id }
+        });
+        if (actualizado) {
+            res.status(200).json({ mensaje: "Mascota actualizada." });
+        } else {
+            res.status(404).json({ mensaje: "Mascota no encontrada." });
+        }
+    } catch (error) {
+        res.status(500).json({ mensaje: `Error al actualizar mascota: ${error}` });
+    }
+};
+
+export {crearMascota, buscarMascotas, buscarMascotaPorId, actualizarMascota}

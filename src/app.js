@@ -1,20 +1,36 @@
 import express from "express";
+import { routerMascota } from "./rutas/mascotasRouter.js";
+import {db} from "./database/conexion.js";
+
 
 //Creamos la instancia de express
 const app = express();
+
+// Verificar conexión a la base de datos 
+db.authenticate().then(() => {
+    console.log(`Conexión a base de datos correcta`);
+}).catch(err => {
+    console.log(`Error en conexión a base de datos ${err}`);
+});
 
 // Definir Rutas
 app.get('/', (req, res) => {
     res.send('Bienvenido a CiberColas: Adopta con Amor');
 });
 
+app.use(express.json());
+
+// Middleware
+app.use('/mascotas', routerMascota);
+
 //Definimos el puerto para el que va a escuchar este servicio
 const PORT=4000;
 
-app.use(express.json());
 
 //Abre e inicia el servicio
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en el puerto ${PORT}`);
-});
+db.sync().then(() => {
+    app.listen(PORT, () => {
+        console.log(`Servidor corriendo en el puerto ${PORT}`);
+    });
+}).catch(err => console.error(`Error: ${err}`));
 

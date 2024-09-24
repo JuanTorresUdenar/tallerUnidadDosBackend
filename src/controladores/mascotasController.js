@@ -1,4 +1,4 @@
-import {mascotas} from "../modelos/mascotaModelo.js";
+import {mascotas} from "../modelos/mascostaModelo.js";
 
 //Crear mascota
 const crearMascota = async (req, res) => {    

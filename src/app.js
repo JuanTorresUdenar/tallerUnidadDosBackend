@@ -1,5 +1,6 @@
 import express from "express";
 import { routerMascota } from "./rutas/mascotasRouter.js";
+import { routerSolicitud } from "./rutas/solicitarMascotaRouter.js";
 import {db} from "./database/conexion.js";
 
 
@@ -22,6 +23,7 @@ app.use(express.json());
 
 // Middleware
 app.use('/mascotas', routerMascota);
+app.use('/solicitudes', routerSolicitud);
 
 //Definimos el puerto para el que va a escuchar este servicio
 const PORT=4000;

@@ -60,4 +60,20 @@ const actualizarMascota = async (req, res) => {
     }
 };
 
-export {crearMascota, buscarMascotas, buscarMascotaPorId, actualizarMascota}
+// Eliminar mascota
+const eliminarMascota = async (req, res) => {
+    const id = req.params.id;
+
+    try {
+        const eliminado = await mascotas.destroy({ where: { id } });
+        if (eliminado) {
+            res.status(200).json({ mensaje: "Mascota eliminada." });
+        } else {
+            res.status(404).json({ mensaje: "Mascota no encontrada." });
+        }
+    } catch (error) {
+        res.status(500).json({ mensaje: `Error al eliminar mascota: ${error}` });
+    }
+};
+
+export {crearMascota, buscarMascotas, buscarMascotaPorId, actualizarMascota, eliminarMascota}

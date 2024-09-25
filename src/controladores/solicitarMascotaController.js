@@ -74,4 +74,46 @@ const buscarSolicitudPorId = async (req, res) => {
     }
 };
 
-export { crearSolicitud, buscarSolicitudes, buscarSolicitudPorId };
+const actualizarSolicitud = async (req, res) => {
+    const { id } = req.params; // ID de la solicitud a actualizar
+    const { cedula, nombre, apellido, direccion, idMascota } = req.body; // Datos de la persona y la mascota
+
+    // Validar que los campos no sean nulos
+    if (!cedula || !nombre || !apellido || !direccion || !idMascota) {
+        return res.status(400).json({ mensaje: "Todos los campos son obligatorios." });
+    }
+
+    try {
+        // Buscar la solicitud
+        const solicitud = await solicitarMascota.findByPk(id);
+        if (!solicitud) {
+            return res.status(404).json({ mensaje: "Solicitud no existe." });
+        }
+
+        // Verificar si la mascota existe
+        const mascotaExistente = await mascotas.findByPk(idMascota);
+        if (!mascotaExistente) {
+            return res.status(404).json({ mensaje: "No se pudo actualizar solicitud porque no existe la mascota" });
+        }
+
+        // Verificar si la persona existe
+        let persona = await Persona.findByPk(cedula);
+        if (!persona) {
+            // Si la persona no existe, crear una nueva persona
+            persona = await Persona.create({ cedula, nombre, apellido, direccion });
+        } else {
+            // Si existe, actualizar sus datos
+            await persona.update({ nombre, apellido, direccion });
+        }
+
+        // Actualizar la solicitud con el ID de la persona y la mascota
+        await solicitud.update({ cedulaPersona: persona.cedula, idMascota });
+
+        res.status(200).json({ mensaje: "Solicitud actualizada con éxito." });
+    } catch (error) {
+        console.error(`Error al actualizar la solicitud: ${error.message}`); // Para depuración
+        res.status(500).json({ mensaje: `Error al actualizar la solicitud: ${error.message}` });
+    }
+};
+
+export { crearSolicitud, buscarSolicitudes, buscarSolicitudPorId, actualizarSolicitud };

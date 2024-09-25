@@ -36,4 +36,20 @@ const crearSolicitud = async (req, res) => {
     }
 };
 
-export { crearSolicitud };
+// Buscar todas las solicitudes
+const buscarSolicitudes = async (req, res) => {
+    try {
+        const solicitudes = await solicitarMascota.findAll({
+            include: [
+                { model: Persona, as: 'persona' },  // Incluir información de la persona
+                { model: mascotas, as: 'mascota' }  // Incluir información de la mascota
+            ]
+        });
+
+        res.status(200).json(solicitudes);
+    } catch (error) {
+        res.status(500).json({ mensaje: `Error al buscar las solicitudes: ${error}` });
+    }
+};
+
+export { crearSolicitud, buscarSolicitudes };

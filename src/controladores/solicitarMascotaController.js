@@ -52,4 +52,26 @@ const buscarSolicitudes = async (req, res) => {
     }
 };
 
-export { crearSolicitud, buscarSolicitudes };
+// Buscar por una solicitud por id
+const buscarSolicitudPorId = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const solicitud = await solicitarMascota.findByPk(id, {
+            include: [
+                { model: Persona, as: 'persona' },
+                { model: mascotas, as: 'mascota' }
+            ]
+        });
+
+        if (!solicitud) {
+            return res.status(404).json({ mensaje: "Solicitud no encontrada." });
+        }
+
+        res.status(200).json(solicitud);
+    } catch (error) {
+        res.status(500).json({ mensaje: `Error al buscar la solicitud: ${error}` });
+    }
+};
+
+export { crearSolicitud, buscarSolicitudes, buscarSolicitudPorId };

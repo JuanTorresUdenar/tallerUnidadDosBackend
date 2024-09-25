@@ -116,4 +116,24 @@ const actualizarSolicitud = async (req, res) => {
     }
 };
 
-export { crearSolicitud, buscarSolicitudes, buscarSolicitudPorId, actualizarSolicitud };
+// Eliminar una solicitud por ID
+const eliminarSolicitud = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Buscar la solicitud
+        const solicitud = await solicitarMascota.findByPk(id);
+        if (!solicitud) {
+            return res.status(404).json({ mensaje: "Solicitud no encontrada." });
+        }
+
+        // Eliminar la solicitud
+        await solicitud.destroy();
+
+        res.status(200).json({ mensaje: "Solicitud eliminada con éxito." });
+    } catch (error) {
+        res.status(500).json({ mensaje: `Error al eliminar la solicitud: ${error}` });
+    }
+};
+
+export { crearSolicitud, buscarSolicitudes, buscarSolicitudPorId, actualizarSolicitud, eliminarSolicitud };
